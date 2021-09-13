@@ -1,16 +1,42 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div class="field-grid">
+      <div v-for="item in data['indexes']" :key="item.index">
+        <FieldGrid >
+        </FieldGrid>
+        {{item.row}}x{{item.col}}
+      </div>
+    </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import FieldGrid from './components/FieldGrid.vue'
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
-  }
+    FieldGrid
+  },
+  computed: {
+    ...mapState([
+      'data'
+    ]),
+    ...mapGetters([
+      
+    ]),
+  },
+  created () {
+    this.initialize()
+    console.log(this.data['indexes'])
+  },
+  methods: {
+    ...mapMutations([
+    
+    ]),
+    ...mapActions([
+      'initialize'
+    ]),
+  },
 }
 </script>
 
@@ -22,5 +48,8 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.field-grid {
+  position: relative;
 }
 </style>
