@@ -9,7 +9,7 @@
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
-  name: 'ItemGrid',
+  name: 'CustomGridItem',
   props: [
     'row', 'col'
   ],
