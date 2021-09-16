@@ -1,7 +1,5 @@
 <template>
-  <div :id="`grid-item-${col}-${row}`" class="item-grid" :style="itemStyles" @click="expandField()">
-    <h1>{{col}}/{{row}}</h1>
-    
+  <div :id="`grid-item-${col}-${row}`" class="item-grid" :class="{'show': show}" :style="itemStyles" @click="expandField()">    
   </div>
 </template>
 
@@ -11,28 +9,34 @@ import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
   name: 'CustomGridItem',
   props: [
-    'row', 'col'
+    'row', 'col', 'show', 
   ],
   computed: {
     ...mapState([
-      'data', 'width_unit', 'height_unit', 'expand_step'
+      'data', 'width_unit', 'height_unit', 'expand_step', 'zoom'
     ]),
     ...mapGetters([
     ]),
     itemStyles() {
       return {
-        '--height': this.height_unit + 'px',
-        '--width': this.width_unit + 'px',
-        '--position-top': ( ( this.col - 1) * this.height_unit) + 'px',
-        '--position-left': ( ( this.row - 1) * this.width_unit) + 'px',
+        '--height': this.height + 'px',
+        '--width': this.width + 'px',
+        '--position-top': ( ( this.col - 1) * this.height) + 'px',
+        '--position-left': ( ( this.row - 1) * this.width) + 'px',
       };
+    },
+    height : function() {
+      return this.height_unit * this.zoom / 100;
+    },
+    width : function() {
+      return this.width_unit * this.zoom / 100;
     }
   },  
   mounted () {
   },
   methods: {
     ...mapMutations([
-      'addIndex'
+      'addIndex', 'setShow'
     ]),
     ...mapActions([
       'initialize'
@@ -44,17 +48,19 @@ export default {
       console.log("expand_step", this.expand_step); 
       for(let i=this.row-this.expand_step; i<this.row+this.expand_step+1; i++) {
         for(let j=this.col-this.expand_step; j<this.col+this.expand_step+1; j++) {
-          temp.push({row: i, col: j})
+          temp.push({row: i, col: j, show:0})
         }
       }
       temp.forEach(element => {
-        var valObj = this.data['indexes'].filter(function(elem){
-            if((elem.row == element.row)&&(elem.col == element.col)) return elem.row;
-        });
+        element.show = 1;
+        console.log(element)
+        this.setShow(element)
+        // var valObj = this.data['indexes'].filter(function(elem){
+        //     if((elem.row == element.row)&&(elem.col == element.col)) return elem.row;
+        // });
 
-        if (valObj.length == 0) this.addIndex(element)
+        // if (valObj.length == 0) this.addIndex(element)
       });
-      console.log(this.data['indexes'])
     }
   },
 }
@@ -68,7 +74,12 @@ export default {
   height: var(--height);
   top: var(--position-top);
   left: var(--position-left);
-  background-color: lightgreen;
-  border: 1px solid red;
+  background-color: #cff2cf;
+  border: none;
+  margin: -1px;
+}
+.item-grid.show {
+  background-color: #8cfd7b;;
+  border: 1px solid rgb(246, 10, 10);
 }
 </style>

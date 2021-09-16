@@ -1,6 +1,6 @@
 <template>
-    <div class="field-grid"  :style="gridStyles">
-        <CustomGridItem  v-for="item in data['indexes']" :key="item.row" :row="item.row" :col="item.col" class="item-grid-wrapper"/>      
+    <div class="field-grid"  :style="gridStyles" @wheel.prevent="handleScroll">
+        <CustomGridItem  v-for="item in data['indexes']" :key="item.row" :row="item.row" :col="item.col" :show="item.show" class="item-grid-wrapper"/>      
     </div>
 </template>
 
@@ -15,7 +15,7 @@ export default {
   },
   computed: {
     ...mapState([
-      'data', 'width_unit', 'height_unit',
+      'data', 'width_unit', 'height_unit', 'zoom'
     ]),
     ...mapGetters([
       'getRowIndexes', 
@@ -35,11 +35,17 @@ export default {
   },
   methods: {
     ...mapMutations([
-    
+      'setZoom'
     ]),
     ...mapActions([
       'initialize'
     ]),
+    handleScroll (event) {
+      // Any code to be executed when the window is scrolled
+      console.log("scroll event", event.deltaY)
+      let temp = this.zoom + event.deltaY / 100;
+      this.setZoom(temp)
+    }
   },
 }
 </script>
@@ -56,7 +62,15 @@ export default {
 }
 .field-grid {
   position: absolute;
+  margin-top: 60px;
   top: var(--position-top);
   left: var(--position-left);
+  width: 100%;
+  height: calc(100% - 60px);
+  overflow: hidden;
+}
+.field-grid:after {
+  content: " "; 
+  clear: both;
 }
 </style>

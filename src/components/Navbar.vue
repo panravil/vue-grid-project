@@ -41,5 +41,6 @@ export default {
 <style>
     .navbar {
         z-index: 9;
+        height: 60px;
     }
 </style>
